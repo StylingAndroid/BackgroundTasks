@@ -28,4 +28,28 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="20dp" >
+
+        <Button
+            android:id="@+id/loaderButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:onClick="doLoader"
+            android:text="@string/loader" />
+
+        <ProgressBar
+            android:id="@+id/loaderProgress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="invisible" />
+
+    </RelativeLayout>
+
 </LinearLayout>
