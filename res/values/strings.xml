@@ -4,5 +4,6 @@
     <string name="hello">Hello World, MainActivity!</string>
     <string name="app_name">BackgroundTasks</string>
     <string name="asynctask">AsyncTask</string>
-
+    <string name="loader">Loader</string>
+    
 </resources>
