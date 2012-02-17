@@ -5,5 +5,6 @@
     <string name="app_name">BackgroundTasks</string>
     <string name="asynctask">AsyncTask</string>
     <string name="loader">Loader</string>
+    <string name="service">Service</string>
     
 </resources>

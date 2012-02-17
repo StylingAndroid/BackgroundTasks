@@ -3,6 +3,10 @@ package com.stylingandroid.background;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
@@ -19,6 +23,11 @@ public class MainActivity extends FragmentActivity implements
 	private ProgressBar loaderProgress;
 	private Button loaderButton;
 
+	private ProgressBar serviceProgress;
+	private Button serviceButton;
+
+	private MyServiceReceiver receiver = new MyServiceReceiver();
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate( Bundle savedInstanceState )
@@ -28,6 +37,9 @@ public class MainActivity extends FragmentActivity implements
 
 		loaderProgress = (ProgressBar) findViewById( R.id.loaderProgress );
 		loaderButton = (Button) findViewById( R.id.loaderButton );
+
+		serviceProgress = (ProgressBar) findViewById( R.id.serviceProgress );
+		serviceButton = (Button) findViewById( R.id.serviceButton );
 	}
 
 	/*
@@ -46,7 +58,7 @@ public class MainActivity extends FragmentActivity implements
 	public void doLoader( View v )
 	{
 		LoaderManager lm = getSupportLoaderManager();
-		Loader<String> loader = lm.initLoader( 0, null, this );
+		Loader<String> loader = lm.restartLoader( 0, null, this );
 		loaderProgress.setVisibility( View.VISIBLE );
 		loaderButton.setVisibility( View.INVISIBLE );
 		loader.forceLoad();
@@ -71,4 +83,55 @@ public class MainActivity extends FragmentActivity implements
 	{
 	}
 
+	/*
+	 * Service
+	 */
+	public void doService( View v )
+	{
+		serviceProgress.setVisibility( View.VISIBLE );
+		serviceButton.setVisibility( View.INVISIBLE );
+		startService( new Intent( MyService.ACTION_DO_SOMETHING ) );
+	}
+
+	@Override
+	protected void onStart()
+	{
+		super.onStart();
+		IntentFilter filter = new IntentFilter();
+		filter.addAction( MyService.ACTION_UPDATE );
+		filter.addAction( MyService.ACTION_PROGRESS );
+		registerReceiver( receiver, filter );
+	}
+
+	@Override
+	protected void onStop()
+	{
+		unregisterReceiver( receiver );
+		super.onStop();
+	}
+
+	private class MyServiceReceiver extends BroadcastReceiver
+	{
+
+		@Override
+		public void onReceive( Context context, Intent intent )
+		{
+			if ( intent.getAction().equals( MyService.ACTION_PROGRESS ) )
+			{
+				int progress = intent.getIntExtra( MyService.EXTRA_PROGRESS, 0 );
+				int max = intent.getIntExtra( MyService.EXTRA_MAX, 0 );
+				serviceProgress.setMax( max );
+				serviceProgress.setProgress( progress );
+			}
+			if ( intent.getAction().equals( MyService.ACTION_UPDATE ) )
+			{
+				String text = intent
+						.getStringExtra( MyService.EXTRA_UPDATE_TEXT );
+				serviceProgress.setVisibility( View.INVISIBLE );
+				serviceButton.setVisibility( View.VISIBLE );
+				Toast.makeText( MainActivity.this, text, Toast.LENGTH_SHORT )
+						.show();
+			}
+		}
+	}
 }
