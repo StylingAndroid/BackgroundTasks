@@ -46,7 +46,7 @@ public class MainActivity extends FragmentActivity implements
 	public void doLoader( View v )
 	{
 		LoaderManager lm = getSupportLoaderManager();
-		Loader<String> loader = lm.initLoader( 0, null, this );
+		Loader<String> loader = lm.restartLoader( 0, null, this );
 		loaderProgress.setVisibility( View.VISIBLE );
 		loaderButton.setVisibility( View.INVISIBLE );
 		loader.forceLoad();
